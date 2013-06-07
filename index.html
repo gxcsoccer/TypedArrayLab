@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Typed Array</title>
+	</head>
+	<body>
+		<canvas id="canvas" width="252" height="252"></canvas>
+	</body>
+	<script type="text/javascript">
+		var canvas = document.getElementById('canvas'),
+			context = canvas.getContext('2d'),
+			shapeCanvas = document.createElement('canvas'),
+			shapeContext = shapeCanvas.getContext('2d'),
+			img = new Image(),
+			gamma = 0.3,
+			imagedata;
+
+		img.src = "./img/qq.png";
+		shapeCanvas.width = 252;
+		shapeCanvas.height = 252;
+		img.onload = function() {
+			shapeContext.drawImage(this, 0, 0, 252, 252);
+
+			imagedata = shapeContext.getImageData(0, 0, 252, 252);
+	 		var canvaspixelarray = imagedata.data;
+		 	var canvaspixellen = canvaspixelarray.length;
+		    var bytearray = new Uint8Array(canvaspixellen);
+		 
+		    for (var i=0;i<canvaspixellen;++i) {
+		          bytearray[i] = canvaspixelarray[i];
+		    }
+
+		    for (var i=0;i<canvaspixellen;++i) {
+		          bytearray[i] = Math.min(255, Math.max(0, bytearray[i] * gamma));
+		    }
+
+		    // var data = new Uint8ClampedArray(canvaspixellen);
+		    // data.set(bytearray);
+		    imagedata.data.set(bytearray);
+
+		    context.putImageData(imagedata,0,0);
+		}
+	</script>
+</html>
